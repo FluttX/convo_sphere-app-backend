@@ -25,7 +25,7 @@ const validateInput = (username: string, email: string, password: string) => {
     return errors;
 };
 
-export const register = async(req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void> => {
     const {username, email, password} = req.body;
 
     const errors = validateInput(username, email, password);
@@ -84,6 +84,60 @@ export const register = async(req: Request, res: Response) => {
     }
 }
 
-export const login = async(req: Request, res: Response) => {
-    
-}
+export const login = async (req: Request, res: Response): Promise<void> => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        res.status(400).json({
+            message: 'Missing email or password.',
+            errors: [
+                !email ? { field: 'email', message: 'Email is required.' } : null,
+                !password ? { field: 'password', message: 'Password is required.' } : null,
+            ].filter(Boolean),
+            status: false,
+        });
+        return;
+    }
+
+    try {
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+        const user = result.rows[0];
+
+        if (!user) {
+            res.status(401).json({
+                message: 'Invalid email or password.',
+                errors: [{ field: 'email', message: 'Email not found or incorrect.' }],
+                status: false,
+            });
+            return;
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            res.status(401).json({
+                message: 'Invalid email or password.',
+                errors: [{ field: 'password', message: 'Password is incorrect.' }],
+                status: false,
+            });
+            return;
+        }
+
+        const token = jwt.sign(
+            { id: user.id, username: user.username, email: user.email },
+            JWT_SECRET,
+            { expiresIn: '10h' }
+        );
+
+        res.status(200).json({
+            message: 'Login successful.',
+            user: { id: user.id, username: user.username },
+            token,
+            status: true,
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: 'An error occurred while processing your login request.',
+            status: false,
+        });
+    }
+};
