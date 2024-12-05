@@ -28,6 +28,8 @@ const validateInput = (username: string, email: string, password: string) => {
 export const register = async (req: Request, res: Response): Promise<void> => {
     const {username, email, password} = req.body;
 
+    console.log('register called');
+
     const errors = validateInput(username, email, password);
     if (errors.length > 0) {
         res.status(400).json({ message: 'Validation failed', errors, status: false });
@@ -87,6 +89,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
 
+    console.log('login called');
+
     if (!email || !password) {
         res.status(400).json({
             message: 'Missing email or password.',
@@ -130,7 +134,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({
             message: 'Login successful.',
-            user: { id: user.id, username: user.username },
+            user: { id: user.id, username: user.username,email: user.email },
             token,
             status: true,
         });
