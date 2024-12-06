@@ -6,3 +6,20 @@ CREATE TABLE users (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+CREATE TABLE conversations (
+	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	participant_one UUID REFERENCES users(id),
+	participant_two UUID REFERENCES users(id),
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE messages (
+	id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+	conversation_id UUID REFERENCES conversations(id),
+	sender_id UUID REFERENCES users(id),
+	content TEXT,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
