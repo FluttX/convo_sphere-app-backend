@@ -79,10 +79,12 @@ ConvoSphere(Backend) is the backend service for the ConvoSphere chat application
    JWT_SECRET=your_secret_key
    ```
 
-5. Start the PostgreSQL server and create the database:
+5. Start the PostgreSQL server and create the database and tables:
    ```sql
-   CREATE DATABASE convosphere;
+   CREATE DATABASE convo_sphere;
    ```
+
+   and other sql tables that is on `project_sql_file.sql`.
 
 6. Run the server in development mode:
    ```bash

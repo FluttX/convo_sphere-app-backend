@@ -51,6 +51,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
                 id: user.id,
                 username: user.username,
                 email: user.email,
+                token: '',
             },
             status: true,
         });
@@ -134,8 +135,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({
             message: 'Login successful.',
-            user: { id: user.id, username: user.username,email: user.email },
-            token,
+            user: { id: user.id, username: user.username, email: user.email, token: token },
             status: true,
         });
     } catch (err) {
