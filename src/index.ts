@@ -39,6 +39,12 @@ io.on('connection', (socket) => {
 
             io.to(conversationId).emit('newMessage', savedMessage);
             console.log(`Message sent to conversation ${conversationId}`);
+
+            io.emit('conversationUpdated', {
+                conversationId, 
+                lastMessage: savedMessage.content,
+                lastMessageTime: savedMessage.created_at,
+            });
         } catch (error) {
             console.error('Failed to save message', error);
         }
