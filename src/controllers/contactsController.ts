@@ -41,31 +41,29 @@ export const addContact = async (req: Request, res: Response) => {
             return;
         }
         
-        const { contact_id } = req.body;
-        if (!contact_id) {
+        const { email } = req.body;
+        if (!email) {
             res.status(400).json({ message: 'Bad Request: Contact ID is required.' });
             return;
         }
 
-        if (!isUuid(contact_id)) {
-            res.status(400).json({ message: "Invalid Contact ID format" });
-            return;
-        }
+        const contactQuery = `SELECT id FROM users WHERE email = $1`;
+        const contactResult = await pool.query(contactQuery, [email]);
 
-        const contactExists = await pool.query(`SELECT id FROM users WHERE id = $1`,[contact_id]);
-
-        if(contactExists.rowCount === 0) {
+        if (contactResult.rowCount === 0) {
             res.status(404).json({ message: 'Not Found: Contact not found.' });
             return;
         }
 
-        const query = `
+        const contactId = contactResult.rows[0].id;
+
+        const insertQuery  = `
             INSERT INTO contacts (user_id, contact_id)
             VALUES ($1, $2)
             ON CONFLICT (user_id, contact_id) DO NOTHING;
         `;
 
-        const result = await pool.query(query, [userId, contact_id]);
+        const result = await pool.query(insertQuery , [userId, contactId]);
 
         if (result.rowCount === 0) {
             res.status(200).json({ message: 'Contact already exists.' });
