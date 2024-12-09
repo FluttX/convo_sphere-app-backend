@@ -7,6 +7,7 @@ export const fetchAllMessagesByConversationsId = async (req: Request, res: Respo
 
     if (!conversationId || !isUuid(conversationId)) {
         res.status(400).json({ message: "Invalid Conversation ID format" });
+        return;
     }
 
     try{

@@ -3,6 +3,7 @@ import {json} from 'body-parser';
 import http from 'http';
 import {Server} from 'socket.io';
 import authRoutes from './routes/authRoutes';
+import contactsRoutes from './routes/contactsRoutes';
 import conversationRoutes from './routes/conversationsRoutes';
 import messagesRoutes from './routes/messagesRoutes';
 import { saveMessage } from './controllers/messagesController';
@@ -19,6 +20,7 @@ const io = new Server(server, {
 app.use('/api/auth', authRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/messages', messagesRoutes);
+app.use('/api/contacts', contactsRoutes);
 
 
 io.on('connection', (socket) => {

@@ -5,7 +5,7 @@ export const fetchAllConversationsByUserId = async (req: Request, res: Response)
     try {
         const userId = req.user?.id;
         if (!userId) {
-            res.status(401).json({ message: 'Unauthorized: User ID is missing' });
+            res.status(401).json({ message: 'Unauthorized: Authentication token is missing.' });
         }
 
         const query = `
