@@ -65,7 +65,7 @@ export const checkOrCreateConversation = async (req: Request, res: Response) => 
             return;
         }
 
-        const existingConversations = await pool.query(
+        const existingConversation = await pool.query(
             `
             SELECT id FROM conversations 
             WHERE (participant_one = $1 AND participant_two = $2)
@@ -74,8 +74,8 @@ export const checkOrCreateConversation = async (req: Request, res: Response) => 
             [userId, contactId]
         );
 
-        if (existingConversations.rows.length > 0) {
-            res.json({ conversationId: existingConversations.rows[0].id });
+        if (existingConversation.rows.length > 0) {
+            res.json({ conversationId: existingConversation.rows[0].id });
             return;
         }
 
