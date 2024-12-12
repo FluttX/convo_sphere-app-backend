@@ -69,6 +69,7 @@ export const checkOrCreateConversation = async (req: Request, res: Response) => 
             `
             SELECT id FROM conversations 
             WHERE (participant_one = $1 AND participant_two = $2)
+            OR (participant_one = $2 AND participant_two = $1)
             LIMIT 1
             `,
             [userId, contactId]
