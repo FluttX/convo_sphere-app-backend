@@ -43,7 +43,7 @@ export const addContact = async (req: Request, res: Response) => {
         
         const { email } = req.body;
         if (!email) {
-            res.status(400).json({ message: 'Bad Request: Contact ID is required.' });
+            res.status(400).json({ message: 'Bad Request: Email is required.' });
             return;
         }
 
