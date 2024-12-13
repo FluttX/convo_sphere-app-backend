@@ -12,8 +12,7 @@ export const fetchContacts = async (req: Request, res: Response) => {
 
         const query = `
         SELECT 
-            c.id AS contact_id,
-            u.id AS user_id,
+            u.id AS contact_id,
             u.username, 
             u.email 
         FROM contacts c
