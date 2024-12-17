@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, {Request, Response} from 'express';
 import {json} from 'body-parser';
 import http from 'http';
@@ -7,6 +10,15 @@ import contactsRoutes from './routes/contactsRoutes';
 import conversationRoutes from './routes/conversationsRoutes';
 import messagesRoutes from './routes/messagesRoutes';
 import { saveMessage } from './controllers/messagesController';
+import './cron/cronJob'; 
+
+const openAiApiKey = process.env.OPENAI_API_KEY;
+
+if (!openAiApiKey) {
+  throw new Error("Missing OpenAI API key in environment variables.");
+}
+
+console.log("OpenAI API Key loaded successfully.");
 
 const app = express();
 const server = http.createServer(app);

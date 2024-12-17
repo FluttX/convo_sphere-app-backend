@@ -1,6 +1,7 @@
 import {Request, Response} from 'express';
 import pool from '../models/db';
 import { validate as isUuid } from "uuid";
+import { AI_BOT_ID } from '../utils/config';
 
 export const fetchAllConversationsByUserId = async (req: Request, res: Response) => {
     try {
@@ -39,7 +40,7 @@ export const fetchAllConversationsByUserId = async (req: Request, res: Response)
         console.error('Error fetching conversations:', error);
         res.status(500).json({ message: 'Failed to fetch conversations' });
     }
-};
+}
 
 export const checkOrCreateConversation = async (req: Request, res: Response) => {
     try {
@@ -96,3 +97,41 @@ export const checkOrCreateConversation = async (req: Request, res: Response) => 
         res.status(500).json({ message: 'Failed to checking or create conversation' });
     }
 }
+
+export const getDailyQuestion = async (req: Request, res: Response) => {
+    try {
+        const conversationId = req.params.id;
+
+        if(!conversationId) {
+            res.status(400).json({ message: 'Bad Request: Conversation ID is required.' });
+            return;
+        }
+
+        if (!isUuid(conversationId)) {
+            res.status(400).json({ message: "Invalid Conversation ID format" });
+            return;
+        }
+
+        const result = await pool.query(
+            `
+            SELECT content FROM messages 
+            WHERE conversation_id = $1 AND sender_id = $2
+            ORDER BY created_at DESC
+            LIMIT 1
+            `,
+            [conversationId, AI_BOT_ID]
+        );
+
+        if(result.rows.length === 0) {
+            res.status(404).json({ message: 'No daily question found for this conversation.' });
+            return;
+        }
+
+        res.json({'question': result.rows[0].content});
+
+    } catch(err) {
+        console.error('Error fetching daily question:', err);
+        res.status(500).json({ message: 'Failed to fetch daily question' });
+    }
+}
+
