@@ -6,6 +6,6 @@ const router = Router();
 
 router.get('/', verifyToken, fetchAllConversationsByUserId);
 router.post('/check-or-create', verifyToken, checkOrCreateConversation);
-router.post('/:id/daily-question', verifyToken, getDailyQuestion);
+router.get('/:id/daily-question', verifyToken, getDailyQuestion);
 
 export default router;

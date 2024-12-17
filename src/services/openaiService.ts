@@ -7,7 +7,7 @@ export const generateDailyQuestion = async (): Promise<string> => {
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
-                {role: 'user',content: 'Generate a fun and engaging daily question (only question no more text) for a chat conversation'}
+                {role: 'user',content: 'Generate a fun and engaging daily question for a chat conversation. No need to any any extra text.'}
             ],
             max_tokens: 50,
         });
