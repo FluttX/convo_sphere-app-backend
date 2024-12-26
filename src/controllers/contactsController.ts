@@ -14,6 +14,7 @@ export const fetchContacts = async (req: Request, res: Response) => {
         SELECT 
             u.id AS contact_id,
             u.username, 
+            u.profile_image,
             u.email 
         FROM contacts c
         INNER JOIN users u ON c.contact_id = u.id
