@@ -5,6 +5,13 @@ import jwt from 'jsonwebtoken';
 
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET ||  'convo_sphere_secret_key';
+const randomImages = [
+    'https://randomuser.me/api/portraits/men/1.jpg',
+    'https://randomuser.me/api/portraits/men/2.jpg',
+    'https://randomuser.me/api/portraits/women/3.jpg',
+    'https://randomuser.me/api/portraits/men/4.jpg',
+    'https://randomuser.me/api/portraits/women/5.jpg',
+    ];
 
 const validateInput = (username: string, email: string, password: string) => {
     const errors: { field: string; message: string }[] = [];
@@ -38,9 +45,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     try{
         const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        const randomImage = randomImages[Math.floor(Math.random() * randomImages.length)];
         const result = await pool.query(
-            'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *',
-            [username, email, hashedPassword]
+            'INSERT INTO users (username, email, password, profile_image) VALUES ($1, $2, $3, $4) RETURNING *',
+            [username, email, hashedPassword, randomImage]
         );
 
         const user = result.rows[0];
