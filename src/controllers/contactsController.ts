@@ -33,6 +33,39 @@ export const fetchContacts = async (req: Request, res: Response) => {
 }
 
 
+export const fetchRecentContacts = async (req: Request, res: Response) => {
+    try{
+        const userId = req.user?.id;
+        if (!userId) {
+            res.status(401).json({ message: 'Unauthorized: Authentication token is missing.' });
+            return;
+        }
+        
+        const query = `
+        SELECT 
+            u.id AS contact_id,
+            u.username,
+            u.profile_image,
+            u.email
+        FROM contacts c
+        JOIN users u ON u.id = c.contact_id
+        WHERE c.user_id = $1
+        ORDER BY c.created_at DESC
+        LIMIT 8
+        `;
+        
+        const { rows } = await pool.query(query, [userId]);
+
+        res.status(200).json(rows);
+        
+    } catch(error) {
+        console.error('Error fetching recent contacts:', error);
+        res.status(500).json({ message: 'An error occurred while fetching recent contacts.' });
+    }    
+
+}
+
+
 export const addContact = async (req: Request, res: Response) => {
     try{
         const userId = req.user?.id;
